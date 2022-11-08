@@ -21,7 +21,7 @@ async function run() {
   try {
     const serviceCollection = client.db("airDoctor").collection("services");
     const reviewCollection = client.db("airDoctor").collection("reviews");
-
+    const blogCollection = client.db("airDoctor").collection("blogs");
     // insert service
     app.post("/services", async (req, res) => {
       const service = req.body;
@@ -65,14 +65,29 @@ async function run() {
     // insert a review
     app.post("/reviews", async (req, res) => {
       const review = req.body;
-      console.log(review);
-        const result = await reviewCollection.insertOne(review);
-        res.send(result);
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
+    // find all review
+    app.get("/reviews", async (req, res) => {
+      const search = req.query.serviceId;
+      console.log(search);
+      const query = { serviceId: search };
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      const count = await reviewCollection.estimatedDocumentCount();
+      res.send({
+        count,
+        reviews,
+      });
     });
 
     // insert a blog
     app.post("/blogs", async (req, res) => {
-      console.log(req.body);
+      const blog = req.body;
+      const result = await blogCollection.insertOne(blog);
+      res.send(result);
     });
 
     // try ends
