@@ -12,7 +12,6 @@ app.use(express.json());
 
 async function run() {
   const uri = `mongodb+srv://airDoctorDbUser:${process.env.DB_PASSWORD}@cluster0.bwn02l7.mongodb.net/?retryWrites=true&w=majority`;
-  //   console.log(uri);
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -21,6 +20,7 @@ async function run() {
 
   try {
     const serviceCollection = client.db("airDoctor").collection("services");
+    const reviewCollection = client.db("airDoctor").collection("reviews");
 
     // insert service
     app.post("/services", async (req, res) => {
@@ -60,6 +60,19 @@ async function run() {
         status: true,
         service,
       });
+    });
+
+    // insert a review
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      console.log(review);
+        const result = await reviewCollection.insertOne(review);
+        res.send(result);
+    });
+
+    // insert a blog
+    app.post("/blogs", async (req, res) => {
+      console.log(req.body);
     });
 
     // try ends
