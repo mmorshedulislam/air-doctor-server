@@ -21,12 +21,26 @@ async function run() {
 
   try {
     const serviceCollection = client.db("airDoctor").collection("services");
+
+    // insert service
     app.post("/services", async (req, res) => {
       const service = req.body;
       const result = await serviceCollection.insertOne(service);
       console.log({
         status: true,
         result,
+      });
+    });
+
+    // find all service
+    app.get("/services", async (req, res) => {
+      const query = {};
+      const cursor = serviceCollection.find(query);
+      const services = await cursor.toArray();
+      const count = await serviceCollection.estimatedDocumentCount();
+      res.send({
+        count,
+        services,
       });
     });
 
