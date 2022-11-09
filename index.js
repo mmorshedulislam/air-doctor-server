@@ -62,6 +62,15 @@ async function run() {
       });
     });
 
+    // find service by query id
+    app.get("/serviceId", async (req, res) => {
+      const search = req.query.serviceId;
+      const query = { _id: ObjectId(search) };
+      const cursor = serviceCollection.find(query);
+      const service = await cursor.toArray();
+      res.send(service);
+    });
+
     // insert a review
     app.post("/reviews", async (req, res) => {
       const review = req.body;
@@ -69,10 +78,9 @@ async function run() {
       res.send(result);
     });
 
-    // find all review
-    app.get("/reviews", async (req, res) => {
+    // find review by service id
+    app.get("/reviewServiceId", async (req, res) => {
       const search = req.query.serviceId;
-      console.log(search);
       const query = { serviceId: search };
       const cursor = reviewCollection.find(query);
       const reviews = await cursor.toArray();
@@ -83,11 +91,71 @@ async function run() {
       });
     });
 
+    // delete review
+    app.delete("/review/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await reviewCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // find review by email
+    app.get("/reviewsEmail", async (req, res) => {
+      const search = req.query.email;
+      // console.log(search);
+      const query = { email: search };
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      const count = await reviewCollection.estimatedDocumentCount();
+      res.send({
+        count,
+        reviews,
+      });
+    });
+
+    // find review by id
+    app.get("/reviewById/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await reviewCollection.findOne(query);
+      res.send(result);
+    });
+
+    // update review by id
+    app.put("/updateReview/:id", async (req, res) => {
+      const id = req.params.id;
+      const review = req.body;
+      const query = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          name: review.name,
+          title: review.title,
+          description: review.description,
+          rating: review.rating,
+        },
+      };
+      const options = { upsert: true };
+      const result = await reviewCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
     // insert a blog
     app.post("/blogs", async (req, res) => {
       const blog = req.body;
       const result = await blogCollection.insertOne(blog);
       res.send(result);
+    });
+
+    // find all blogs
+    app.get("/blogs", async (req, res) => {
+      const query = {};
+      const cursor = blogCollection.find(query);
+      const blogs = await cursor.toArray();
+      res.send(blogs);
     });
 
     // try ends
