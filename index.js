@@ -34,9 +34,15 @@ async function run() {
 
     // find all service
     app.get("/services", async (req, res) => {
+      const size = parseInt(req.query.perPage);
+      const page = parseInt(req.query.currentPage);
+      console.log(size, page);
       const query = {};
       const cursor = serviceCollection.find(query);
-      const services = await cursor.toArray();
+      const services = await cursor
+        .skip(size * page)
+        .limit(size)
+        .toArray();
       const count = await serviceCollection.estimatedDocumentCount();
       res.send({
         count,
