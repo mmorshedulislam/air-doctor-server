@@ -95,8 +95,8 @@ async function run() {
     app.get("/serviceId", async (req, res) => {
       const search = req.query.serviceId;
       const query = { _id: ObjectId(search) };
-      const cursor = serviceCollection.find(query);
-      const service = await cursor.toArray();
+      const service = await serviceCollection.findOne(query);
+      // const service = await cursor.toArray();
       res.send(service);
     });
 
