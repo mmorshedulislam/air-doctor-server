@@ -1,6 +1,6 @@
-### It is a server that provides health services info.
+## It is a server that provides health services info.
 
-# This Server provides services to solve various psychological problems.
+### This Server provides services to solve various psychological problems.
 
 ### Resources & Credits
 
@@ -21,6 +21,6 @@ Vercel -> [Vercel](https://air-doctor-server.vercel.app/)
 
 ### Service and Blog link
 
-All Services -> [Vercel - (API)](https://air-doctor-server.vercel.app/services)/
+All Services -> [Vercel - (API)](https://air-doctor-server.vercel.app/services)
 
 All Blogs -> [Vercel - (API)](https://air-doctor-server.vercel.app/services/blogs)

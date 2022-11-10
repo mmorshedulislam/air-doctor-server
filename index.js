@@ -38,6 +38,7 @@ async function run() {
     const serviceCollection = client.db("airDoctor").collection("services");
     const reviewCollection = client.db("airDoctor").collection("reviews");
     const blogCollection = client.db("airDoctor").collection("blogs");
+    const timeCollection = client.db("airDoctor").collection("time");
 
     // jwt sign
     app.post("/jwt", (req, res) => {
@@ -61,7 +62,7 @@ async function run() {
       const size = parseInt(req.query.perPage);
       const page = parseInt(req.query.currentPage);
       const query = {};
-      const cursor = serviceCollection.find(query);
+      const cursor = serviceCollection.find(query).sort({ dateField: -1 });
       const services = await cursor
         .skip(size * page)
         .limit(size)
@@ -76,7 +77,7 @@ async function run() {
     // find limit 3 service
     app.get("/service3", async (req, res) => {
       const query = {};
-      const cursor = serviceCollection.find(query);
+      const cursor = serviceCollection.find(query).sort({ dateField: -1 });
       const service = await cursor.limit(3).toArray();
       res.send(service);
     });
@@ -111,7 +112,7 @@ async function run() {
     app.get("/reviewServiceId", async (req, res) => {
       const search = req.query.serviceId;
       const query = { serviceId: search };
-      const cursor = reviewCollection.find(query);
+      const cursor = reviewCollection.find(query).sort({ dateField: -1 });
       const reviews = await cursor.toArray();
       const count = await reviewCollection.estimatedDocumentCount();
       res.send({
@@ -141,7 +142,7 @@ async function run() {
           email: req.query.email,
         };
       }
-      const cursor = reviewCollection.find(query);
+      const cursor = reviewCollection.find(query).sort({ dateField: -1 });
       const reviews = await cursor.toArray();
       const count = await reviewCollection.estimatedDocumentCount();
       res.send({
@@ -190,7 +191,7 @@ async function run() {
     // find all blogs
     app.get("/blogs", async (req, res) => {
       const query = {};
-      const cursor = blogCollection.find(query);
+      const cursor = blogCollection.find(query).sort({ dateField: -1 });
       const blogs = await cursor.toArray();
       res.send(blogs);
     });
